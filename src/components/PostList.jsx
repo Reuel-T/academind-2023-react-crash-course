@@ -1,12 +1,10 @@
-import {React, useState} from 'react'
-import Modal from './Modal';
-import NewPost from './NewPost';
+import { React, useState, useEffect } from 'react'
+import { useLoaderData } from 'react-router-dom';
 import Post from './Post'
 
 import classes from './PostList.module.css';
 
-function PostList({ isPosting, onStopPosting }) {
-
+function PostList() {
 /*   const [enteredBody, setEnteredBody] = useState('');
   const [enteredAuthor, setEnteredAuthor] = useState('');
   
@@ -26,9 +24,29 @@ function PostList({ isPosting, onStopPosting }) {
     setEnteredAuthor(event.target.value);
   } */
 
-  const [posts, setPosts] = useState([]);
+  const posts = useLoaderData();//get info from react router
+  //const [posts, setPosts] = useState([]);
+  //const [isFetching, setIsFetching] = useState(false);
 
-  function addPostHandler(postData) {
+/*   useEffect(() => {
+    async function fetchPosts() {
+      setIsFetching(true);
+      const response = await fetch('http://localhost:8080/posts');
+      const resData = await response.json();
+      if (!response.ok) {
+        console.log('API Fetch failed');
+      }
+      setPosts(resData.posts);
+      setIsFetching(false);
+    }
+    fetchPosts();
+   }, []); */
+  //the function is executed by react whenever it considers the effect to require execution
+  //the array specifies the dependencies that will cause the use effect function to run again
+  //empty, the function has no dependencies, it will only run when the component is rendered
+
+
+/*   function addPostHandler(postData) {
     fetch('http://localhost:8080/posts', {
       method: 'POST',
       body: JSON.stringify(postData),
@@ -40,23 +58,18 @@ function PostList({ isPosting, onStopPosting }) {
     console.log(posts);
     //using an arrow function is better when new state is based on previous state
   }
-
+ */
   return (
     <>
-      {/* Conditional Rendering of modal, depending on, if modal is visible, render modal, else render null  */
-        isPosting && (
-          <Modal Modal onClose={onStopPosting}>
-            <NewPost
-              onAddPost= {addPostHandler}
-              onCancel={onStopPosting} />
-          </Modal>
-        )
-      }
-
       {
         posts.length > 0 &&
         <ul className={ classes.posts }>
-        {posts.map(post => <Post key={post.body} author={post.author} body={post.body} />)}
+            {posts.map(post =>
+              <Post
+                key={post.id}
+                id={post.id}
+                author={post.author}
+                body={post.body} />)}
       </ul>
       }
       {
